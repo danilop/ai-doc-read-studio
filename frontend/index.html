@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Doc Read Studio</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .main-content {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .sidebar {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            width: 300px;
+            flex-shrink: 0;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .discussion-area {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            flex: 1;
+            height: 80vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .conversation {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .input-area {
+            padding: 20px;
+            background: #f8f9fa;
+        }
+        
+        .prompt-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            min-height: 60px;
+            resize: vertical;
+        }
+        
+        .btn {
+            background: #FF9900;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        
+        .btn:hover {
+            background: #e88b00;
+        }
+        
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .team-member {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 6px;
+            margin-bottom: 6px;
+            overflow: hidden;
+        }
+        
+        .team-member input, .team-member select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin: 5px 0;
+        }
+        
+        .message {
+            margin-bottom: 16px;
+            display: flex;
+            gap: 12px;
+        }
+        
+        .message-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #007bff;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+        
+        .message-bubble {
+            background: #f8f9fa;
+            padding: 12px 16px;
+            border-radius: 18px;
+            max-width: 70%;
+        }
+        
+        .message.user {
+            justify-content: flex-end;
+        }
+
+        .message.user .message-bubble {
+            background: #007bff;
+            color: white;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        
+        .upload-area {
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        
+        .upload-area:hover {
+            border-color: #FF9900;
+        }
+        
+        .file-input {
+            display: none;
+        }
+        
+        .document-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px;
+            background: #f8f9fa;
+            border-radius: 4px;
+            margin: 5px 0;
+        }
+        
+        .remove-doc {
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            padding: 2px 6px;
+            cursor: pointer;
+        }
+        
+        .action-plan-section {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+        
+        .action-plan-header {
+            background: #6f42c1;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .action-plan-content {
+            padding: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #232F3E;
+        }
+        
+        .section-subtitle {
+            font-size: 14px;
+            font-weight: 500;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        
+        .uploaded-documents {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+        
+        .member-header {
+            padding: 8px 12px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            user-select: none;
+            transition: background-color 0.2s ease;
+        }
+        
+        .member-header:hover {
+            background: rgba(0,0,0,0.02);
+        }
+        
+        .member-summary {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+        }
+        
+        .member-avatar {
+            font-size: 16px;
+            width: 24px;
+            text-align: center;
+        }
+        
+        .member-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        
+        .member-display-name {
+            font-weight: 600;
+            font-size: 14px;
+            color: #333;
+        }
+        
+        .member-display-role {
+            font-size: 12px;
+            color: #666;
+            line-height: 1.2;
+        }
+        
+        .expand-icon {
+            font-size: 12px;
+            color: #666;
+            transition: transform 0.2s ease;
+        }
+        
+        .member-details {
+            padding: 0 12px 12px 12px;
+            transition: all 0.3s ease;
+            opacity: 1;
+            max-height: 300px;
+        }
+        
+        .member-details.collapsed {
+            opacity: 0;
+            max-height: 0;
+            padding: 0 12px;
+            overflow: hidden;
+        }
+        
+        .member-field {
+            margin-bottom: 12px;
+        }
+        
+        .field-label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 4px;
+        }
+        
+        /* Typing Indicator Styles */
+        .typing-indicator {
+            margin-bottom: 16px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            opacity: 0.8;
+            width: 100%;
+        }
+        
+        .typing-indicator .message-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+            flex-shrink: 0;
+            margin-top: 4px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 1; }
+        }
+        
+        .typing-bubble {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            color: #333;
+            border-radius: 18px 18px 18px 4px;
+            padding: 16px 20px;
+            max-width: min(200px, 40vw);
+            position: relative;
+            flex-shrink: 1;
+        }
+        
+        .typing-text {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
+            font-style: italic;
+        }
+        
+        .typing-dots {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+        }
+        
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #6c757d;
+            animation: typing 1.5s infinite;
+        }
+        
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        
+        @keyframes typing {
+            0%, 60%, 100% {
+                transform: translateY(0);
+                opacity: 0.4;
+            }
+            30% {
+                transform: translateY(-10px);
+                opacity: 1;
+            }
+        }
+        
+        .agents-thinking {
+            background: linear-gradient(45deg, #f8f9fa, #e9ecef);
+            border: 1px solid #dee2e6;
+            border-radius: 12px;
+            padding: 16px;
+            margin: 16px 0;
+            text-align: center;
+        }
+        
+        .agents-thinking-text {
+            font-size: 14px;
+            color: #495057;
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+        
+        .agents-progress {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        
+        .agent-progress-dot {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+            position: relative;
+            animation: agentThinking 2s infinite;
+        }
+        
+        .agent-progress-dot:nth-child(2) {
+            animation-delay: 0.3s;
+        }
+        
+        .agent-progress-dot:nth-child(3) {
+            animation-delay: 0.6s;
+        }
+        
+        .agent-progress-dot:nth-child(4) {
+            animation-delay: 0.9s;
+        }
+        
+        @keyframes agentThinking {
+            0%, 70%, 100% {
+                transform: scale(1);
+                opacity: 0.7;
+            }
+            35% {
+                transform: scale(1.2);
+                opacity: 1;
+            }
+        }
+        
+        /* Beautiful Button Bar Animations */
+        .button-bar {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            align-items: center;
+        }
+        
+        .control-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .control-btn:hover {
+            background-color: #5a6268;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        }
+        
+        .control-btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .control-btn.regenerate {
+            background-color: #17a2b8;
+        }
+        
+        .control-btn.regenerate:hover:not(:disabled) {
+            background-color: #138496;
+        }
+        
+        .control-btn.revert {
+            background-color: #dc3545;
+        }
+        
+        .control-btn.revert:hover:not(:disabled) {
+            background-color: #c82333;
+        }
+        
+        .send-btn {
+            background-color: #28a745;
+            margin-left: auto;
+        }
+        
+        .send-btn:hover:not(:disabled) {
+            background-color: #218838;
+        }
+        
+        .control-btn.summary {
+            background-color: #6f42c1;
+        }
+        
+        .control-btn.summary:hover:not(:disabled) {
+            background-color: #5a359a;
+        }
+        
+        .control-btn.export {
+            background-color: #fd7e14;
+        }
+        
+        .control-btn.export:hover:not(:disabled) {
+            background-color: #e96b00;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>AI Doc Read Studio</h1>
+            <p>Collaborative document review with AI agents</p>
+        </div>
+        
+        <div class="main-content" id="mainContent">
+            <div class="sidebar" id="sidebarContainer">
+                <!-- Document Upload Section -->
+                <div class="section-title">1. Upload Documents</div>
+                <div class="upload-area" id="uploadArea">
+                    <p style="margin: 5px 0;">Drop documents here or click to browse</p>
+                    <input type="file" id="fileInput" class="file-input" accept=".txt,.md,.docx,.pdf" multiple>
+                    <button id="uploadBtn" class="btn" style="margin: 8px 0;">Choose Files</button>
+                    <p style="margin: 5px 0;"><small>TXT, Markdown, Word, PDF (Max: 10 files)</small></p>
+                </div>
+                <div id="uploadStatus"></div>
+                
+                <!-- Uploaded Documents List -->
+                <div id="uploadedDocuments" class="uploaded-documents" style="display: none;">
+                    <div class="section-subtitle">📄 Uploaded Documents:</div>
+                    <div id="documentsList"></div>
+                </div>
+                
+                <!-- Team Setup Section -->
+                <div class="section-title" style="margin-bottom: 15px;">2. Setup Team</div>
+                
+                <!-- Team Configuration Controls -->
+                <div style="margin-bottom: 15px;">
+                    <div style="font-size: 12px; color: #666; margin-bottom: 8px;">Load/Save Team Configurations:</div>
+                    <div style="display: flex; gap: 6px; align-items: center; padding: 8px; background: #f8f9fa; border-radius: 6px; border: 1px solid #e9ecef;">
+                        <select id="teamTemplateSelect" 
+                                title="Load a preset team configuration"
+                                style="background: #6c757d; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 11px; flex: 1;">
+                            <option value="">📋 Team Templates</option>
+                            <option value="empty">📄 New Team</option>
+                            <option value="quick-review">⚡ Quick Review</option>
+                            <option value="full-stack">🏗️ Full Stack Review</option>
+                            <option value="security-audit">🔒 Security Audit</option>
+                        </select>
+                        <button id="loadTeamBtn" class="btn" 
+                                title="Load team configuration from JSON file"
+                                style="background: #007bff; font-size: 11px; padding: 4px 8px; min-width: auto;">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                <polyline points="17,8 12,3 7,8"/>
+                                <line x1="12" y1="3" x2="12" y2="15"/>
+                            </svg>
+                            Load
+                        </button>
+                        <button id="saveTeamBtn" class="btn" 
+                                title="Save team configuration as JSON file"
+                                style="background: #28a745; font-size: 11px; padding: 4px 8px; min-width: auto;">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                <polyline points="7,10 12,15 17,10"/>
+                                <line x1="12" y1="15" x2="12" y2="3"/>
+                            </svg>
+                            Save
+                        </button>
+                        <input type="file" id="teamConfigFileInput" accept=".json" style="display: none;">
+                    </div>
+                </div>
+                
+                <!-- Team Name Configuration Card -->
+                <div class="team-member" id="teamNameCard" style="margin-bottom: 12px;">
+                    <div class="member-header">
+                        <div class="member-summary">
+                            <span class="member-avatar">🏷️</span>
+                            <div class="member-info">
+                                <span class="member-display-name" id="teamNameDisplay">Default Review Team</span>
+                                <span class="member-display-role" id="teamStatsDisplay">Team Configuration Name</span>
+                            </div>
+                        </div>
+                        <div class="team-indicators" id="teamIndicators" style="display: flex; gap: 4px; align-items: center; margin-right: 8px;">
+                            <!-- Team indicators will be populated by JavaScript -->
+                        </div>
+                        <div class="expand-icon">▼</div>
+                    </div>
+                    <div class="member-details collapsed">
+                        <div class="member-field">
+                            <label class="field-label">🏷️ Team Name</label>
+                            <input type="text" id="teamNameInput" value="Default Review Team" 
+                                   class="member-name"
+                                   placeholder="Enter team configuration name"
+                                   title="Name for this team configuration (used for saved files)">
+                        </div>
+                        <div style="background: #f8f9fa; padding: 8px; border-radius: 6px; font-size: 12px; color: #495057; margin-top: 8px;">
+                            💡 This name will be used when saving/loading team configurations
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="teamMembers">
+                    <!-- Team members will be added here -->
+                </div>
+                <div style="display: flex; gap: 8px; margin-top: 10px;">
+                    <button class="btn add-member-btn" style="flex: 1; min-height: 36px; padding: 8px 16px;">
+                        + Add Team Member
+                    </button>
+                    <button class="btn add-customer-btn" id="addCustomerBtn" style="background: #28a745; flex: 1; min-height: 36px; padding: 8px 16px;">
+                        + Add Customer
+                    </button>
+                </div>
+                
+                <!-- Start Discussion Button -->
+                <div style="margin-top: 20px;">
+                    <button class="btn" id="startBtn" disabled>
+                        Start Discussion
+                    </button>
+                </div>
+            </div>
+            
+            <div class="discussion-area">
+                <div class="conversation" id="conversation">
+                    <div class="loading">
+                        Upload a document and set up your team to begin the discussion...
+                    </div>
+                </div>
+                
+                <div class="input-area hidden" id="inputArea">
+                    <textarea class="prompt-input" id="promptInput" 
+                              placeholder="Enter your prompt or question for the team..."></textarea>
+                    
+                    <!-- Button Bar -->
+                    <div class="button-bar">
+                        <button class="control-btn revert hidden" id="revertBtn" 
+                                title="Revert to Previous Message">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M3 7v6h6"/>
+                                <path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/>
+                            </svg>
+                            Revert
+                        </button>
+                        
+                        <button class="control-btn regenerate hidden" id="regenerateBtn" 
+                                title="Regenerate Last Responses">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M1 4v6h6"/>
+                                <path d="M23 20v-6h-6"/>
+                                <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"/>
+                            </svg>
+                            Regenerate
+                        </button>
+                        
+                        <button class="btn send-btn" id="sendBtn"
+                                title="Send Message">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M22 2L11 13"/>
+                                <path d="M22 2l-7 20-4-9-9-4 20-7z"/>
+                            </svg>
+                            Send
+                        </button>
+                    </div>
+                    
+                    <!-- Summary and Export Section -->
+                    <div class="summary-separator hidden" id="summarySeparator" style="height: 1px; background: linear-gradient(to right, transparent, #e9ecef 20%, #e9ecef 80%, transparent); margin: 15px 10px 5px 10px;"></div>
+                    <div class="summary-bar hidden" id="summaryBar" style="margin-top: 15px;">
+                        <!-- Export Controls -->
+                        <div class="export-controls" style="display: flex; gap: 8px; margin-bottom: 12px; align-items: center;">
+                            <span style="font-size: 14px; color: #495057; margin-right: 8px;">📤 Export Conversation:</span>
+                            <button class="control-btn export hidden" id="exportMarkdownBtn" 
+                                    title="Export conversation as Markdown">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                    <polyline points="14,2 14,8 20,8"/>
+                                    <path d="M7 13l3 3 7-7"/>
+                                </svg>
+                                Markdown
+                            </button>
+                            <button class="control-btn export hidden" id="exportPdfBtn" 
+                                    title="Export conversation as PDF">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                    <polyline points="14,2 14,8 20,8"/>
+                                    <rect x="8" y="13" width="8" height="7" rx="1"/>
+                                </svg>
+                                PDF
+                            </button>
+                        </div>
+                        
+                        <!-- Action Plan Controls -->  
+                        <div class="action-plan-controls" style="display: flex; gap: 8px; align-items: center;">
+                            <span style="font-size: 14px; color: #495057; margin-right: 8px;">📋 Generate Action Plan:</span>
+                            <button class="control-btn summary hidden" id="summaryBtn" 
+                                    title="Generate Action Plan">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                    <polyline points="14,2 14,8 20,8"/>
+                                    <line x1="16" y1="13" x2="8" y2="13"/>
+                                    <line x1="16" y1="17" x2="8" y2="17"/>
+                                    <polyline points="10,9 9,9 8,9"/>
+                                </svg>
+                                Generate Action Plan
+                            </button>
+                            <select class="summary-model-select hidden" id="summaryModelSelect" 
+                                    title="AI model for summary generation"
+                                    style="padding: 10px 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; background-color: white; cursor: pointer;">
+                                <!-- Options will be populated by JavaScript -->
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="action-plan-section hidden" id="actionPlanSection">
+                    <div class="action-plan-header">
+                        <h3>📋 Action Plan</h3>
+                        <div style="display: flex; gap: 8px;">
+                            <button class="control-btn export" id="downloadMarkdownBtn" 
+                                    title="Download action plan as Markdown">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                    <polyline points="14,2 14,8 20,8"/>
+                                    <path d="M7 13l3 3 7-7"/>
+                                </svg>
+                                Markdown
+                            </button>
+                            <button class="control-btn export" id="downloadPdfBtn" 
+                                    title="Download action plan as PDF">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                    <polyline points="14,2 14,8 20,8"/>
+                                    <rect x="8" y="13" width="8" height="7" rx="1"/>
+                                </svg>
+                                PDF
+                            </button>
+                            <button class="btn" id="closeActionPlanBtn" style="background: #6c757d;">Close</button>
+                        </div>
+                    </div>
+                    <div class="action-plan-content" id="actionPlanContent"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="config.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

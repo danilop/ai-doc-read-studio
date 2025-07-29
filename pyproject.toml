@@ -1,0 +1,107 @@
+[project]
+name = "ai-doc-read-studio"
+version = "1.0.0"
+description = "Collaborative document review application using AI agents with Amazon Bedrock and Nova models"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+authors = [
+    { name = "AI Doc Read Studio", email = "contact@example.com" }
+]
+keywords = ["ai", "document-review", "collaboration", "agents", "bedrock", "nova"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+]
+
+dependencies = [
+    "aiofiles>=24.1.0",
+    "boto3>=1.39.11",
+    "fastapi>=0.116.1",
+    "httpx>=0.28.1",
+    "markdown>=3.8.2",
+    "pypdf2>=3.0.1",
+    "pytest>=8.4.1",
+    "pytest-asyncio>=1.1.0",
+    "python-docx>=1.2.0",
+    "python-jose>=3.5.0",
+    "python-multipart>=0.0.20",
+    "requests>=2.32.4",
+    "strands-agents>=1.0.1",
+    "uvicorn>=0.35.0",
+    "slowapi>=0.1.9",
+    "tenacity>=8.2.3",
+    "structlog>=24.4.0",
+    "redis>=5.0.1",
+    "python-dotenv>=1.0.0",
+    "aiohttp>=3.12.14",
+    "websockets>=15.0.1",
+    "fastapi-websocket-pubsub>=1.0.1",
+    "reportlab>=4.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.4.1",
+    "pytest-asyncio>=1.1.0",
+    "pytest-cov>=4.0.0",
+    "black>=23.0.0",
+    "ruff>=0.1.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/example/ai-doc-read-studio"
+Repository = "https://github.com/example/ai-doc-read-studio"
+Documentation = "https://github.com/example/ai-doc-read-studio#readme"
+Issues = "https://github.com/example/ai-doc-read-studio/issues"
+
+
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["backend*"]
+exclude = ["tests*", "logs*", "uploads*", "sessions*", "frontend*"]
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra -q --strict-markers"
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py310"
+select = ["E", "F", "W", "C90", "I", "N", "UP", "YTT", "S", "BLE", "FBT", "B", "A", "COM", "C4", "DTZ", "T10", "EM", "EXE", "ISC", "ICN", "G", "INP", "PIE", "T20", "PYI", "PT", "Q", "RSE", "RET", "SLF", "SIM", "TID", "TCH", "ARG", "PTH", "ERA", "PD", "PGH", "PL", "TRY", "NPY", "RUF"]
+ignore = ["S101", "COM812", "ISC001"]
+
+[tool.ruff.per-file-ignores]
+"tests/*" = ["S101", "ARG", "FBT"]
+
+[tool.black]
+line-length = 88
+target-version = ['py310']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
