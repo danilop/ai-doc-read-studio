@@ -1,0 +1,53 @@
+{
+  "backend": {
+    "host": "0.0.0.0",
+    "port": 8000,
+    "reload": true,
+    "log_level": "info",
+    "log_file": "logs/backend.log"
+  },
+  "frontend": {
+    "host": "localhost",
+    "port": 3000,
+    "log_level": "info",
+    "log_file": "logs/frontend.log"
+  },
+  "api": {
+    "base_url": "http://localhost:8000"
+  },
+  "app": {
+    "name": "AI Doc Read Studio",
+    "version": "1.0.0",
+    "description": "Collaborative document review with AI agents"
+  },
+  "models": {
+    "available": [
+      {
+        "value": "nova-micro",
+        "label": "Micro (Fast)",
+        "description": "Fastest, Basic",
+        "bedrock_id": "us.amazon.nova-micro-v1:0"
+      },
+      {
+        "value": "nova-lite",
+        "label": "Lite (Balanced)",
+        "description": "Balanced",
+        "bedrock_id": "us.amazon.nova-lite-v1:0"
+      },
+      {
+        "value": "nova-pro",
+        "label": "Pro (Advanced)",
+        "description": "Advanced",
+        "bedrock_id": "us.amazon.nova-pro-v1:0"
+      },
+      {
+        "value": "nova-premier",
+        "label": "Premier (Best)",
+        "description": "Best Quality",
+        "bedrock_id": "us.amazon.nova-premier-v1:0"
+      }
+    ],
+    "default_team": "nova-lite",
+    "default_summary": "nova-lite"
+  }
+}
