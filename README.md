@@ -2,6 +2,8 @@
 
 A web-based collaborative document review application using AI agents with Amazon Bedrock and Nova models for intelligent multi-agent discussions.
 
+<img width="1406" height="1307" alt="ai-doc-read-studio" src="https://github.com/user-attachments/assets/a61a7263-27a7-4d12-9785-834029dfc1cc" />
+
 ## Features
 
 - **Document Upload**: Support for TXT, Markdown, Word (.docx), and PDF files
