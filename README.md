@@ -1,6 +1,10 @@
 # AI Doc Read Studio
 
-A web-based collaborative document review application using AI agents with Amazon Bedrock and Nova models for intelligent multi-agent discussions.
+When teams gather together to review important documents, magic happens. Different perspectives collide, expertise mingles, and insights emerge that no single person could have discovered alone.
+
+I used Strands Agents and Amazon Nova models to build AI Doc Read Studio, a web-based collaborative document review application using AI agents to simulate a discussion.
+
+You can use it to prepare for a meeting or just get feedback on what you're working on.
 
 <img width="1406" height="1307" alt="ai-doc-read-studio" src="https://github.com/user-attachments/assets/a61a7263-27a7-4d12-9785-834029dfc1cc" />
 
