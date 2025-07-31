@@ -27,6 +27,8 @@ You can use it to prepare for a meeting or just get feedback on what you're work
 ### Quick Start
 
 ```bash
+git clone https://github.com/danilop/ai-doc-read-studio
+cd ai-doc-read-studio
 # Simplified way to install dependencies and start both backend and frontend servers
 ./start.sh
 ```
@@ -35,7 +37,7 @@ You can use it to prepare for a meeting or just get feedback on what you're work
 
 1. **Clone the repository:**
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/danilop/ai-doc-read-studio
    cd ai-doc-read-studio
    ```
 
