@@ -2,7 +2,7 @@
 
 When teams gather together to review important documents, magic happens. Different perspectives collide, expertise mingles, and insights emerge that no single person could have discovered alone.
 
-I used Strands Agents and Amazon Nova models to build AI Doc Read Studio, a web-based collaborative document review application using AI agents to simulate a discussion.
+This project uses [Strands Agents](https://strandsagents.com/latest/) and [Amazon Nova](https://nova.amazon.com) models to build **AI Doc Read Studio**, a web-based collaborative document review application using AI agents to simulate a discussion.
 
 You can use it to prepare for a meeting or just get feedback on what you're working on.
 
