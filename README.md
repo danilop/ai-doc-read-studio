@@ -33,6 +33,8 @@ cd ai-doc-read-studio
 ./start.sh
 ```
 
+Open the Web Interface: http://localhost:3000
+
 ### Installation
 
 1. **Clone the repository:**
