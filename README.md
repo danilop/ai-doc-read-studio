@@ -22,7 +22,14 @@ You can use it to prepare for a meeting or just get feedback on what you're work
 ### Prerequisites
 - Python 3.10+ 
 - [UV package manager](https://docs.astral.sh/uv/) - fastest Python package installer
-- AWS credentials configured for Bedrock access (optional for demo mode)
+- AWS credentials configured for Bedrock access
+
+### Quick Start
+
+```bash
+# Simplified way to instlal dependencies and start both backend and frontend servers
+./start.sh
+```
 
 ### Installation
 
@@ -43,12 +50,6 @@ You can use it to prepare for a meeting or just get feedback on what you're work
 ```bash
 # Start both backend and frontend servers
 uv run python start_app.py
-```
-
-#### Simplified start script:
-```bash
-# Simplified way to start both backend and frontend servers
-./start.sh
 ```
 
 #### Alternative: Start Servers Separately
