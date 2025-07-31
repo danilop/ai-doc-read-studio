@@ -27,7 +27,7 @@ You can use it to prepare for a meeting or just get feedback on what you're work
 ### Quick Start
 
 ```bash
-# Simplified way to instlal dependencies and start both backend and frontend servers
+# Simplified way to install dependencies and start both backend and frontend servers
 ./start.sh
 ```
 
